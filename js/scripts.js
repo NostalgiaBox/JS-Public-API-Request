@@ -1,9 +1,12 @@
 
+//This holds the current set of users from either the initial call or the search results
 var users = []
+//This gets set on the initial fetch and is never altered, it is what gets checked on searches.
 const fullUsers = []
-var dataSet;
 
+// A user Class to hold our users.
 class User {
+    //Constructor takes all of the user data that will ever be needed
     constructor(firstName, lastName, image, email, city, state, street, postcode, cell, dob) {
         this.image = image;
         this.firstName = firstName;
@@ -14,11 +17,13 @@ class User {
         this.street = street; 
         this.postcode = postcode; 
         this.cell = cell; 
+        //Date of Birth will be logged as an actual date object so it can display different ways quickly
         this.dob = new Date(dob);
     }
 
+    // This function takes a string and returns true if it matches part of the full name string.
     search(searchString){
-
+        // Check the first name + space + last name all set to lowercase versus the search string, also set to lowercase.
         if((this.firstName + ' ' + this.lastName).toLowerCase().indexOf(searchString.toLowerCase()) >= 0){
             return true;
         }
@@ -27,10 +32,12 @@ class User {
 
 }
 
+// This is the call to fetch all of our users on the initial run
 function fetchUsers() {
     fetch('https://randomuser.me/api/?results=12')
     .then(response => response.json())
     .then(data => {
+        // Loop through the JSON results, pull the data, and create a user out of it.
         for(let i = 0; i < data.results.length; i += 1){
             let result = data.results[i];
             let firstName = result.name.first;
@@ -44,24 +51,27 @@ function fetchUsers() {
             let cell = result.cell;       
             let dob = result.dob.date;     
             console.log(`First name: ${firstName} Last name: ${lastName} image: ${image} email: ${email}`);
+            // push the user to both the temp and permanent user lists.
             users.push(new User(firstName, lastName, image, email, city, state, street, postcode, cell, dob));
-            addUser(users[i]);
             fullUsers.push(users[i]);
+            // Add the user to the page
+            addUser(users[i]);
         }
-        dataSet = data;
         //console.log(users);
-    });
+    })
+    .catch(error => alert('There was an error loading the API, sorry.  Error: ', error));
 }
 
+// Wipe out all the gallery content
 function clearGallery(){
     const gallery = document.getElementById('gallery');
     gallery.innerHTML = "";
 }
 
+// Add a single user to the gallery
 function addUser(user){
     const gallery = document.getElementById('gallery');
     const card = document.createElement('div');
-    const cardInfoContainer = document.createElement('div');
     card.className = 'card';
     card.innerHTML = `
         <div class="card-img-container">
@@ -74,9 +84,12 @@ function addUser(user){
         </div>
         `;
     gallery.appendChild(card);
+
+    // Add an event listener to create a modal for this user on click and pass in the user object
     card.addEventListener('click', () => {addModal(user)});
 }
 
+// Adds the search container to the page and its functionality
 function addSearchContainer() {
     const searchContainer = document.getElementsByClassName('search-container')[0];
     const searchForm = document.createElement('form');
@@ -101,6 +114,8 @@ function addSearchContainer() {
 
     searchContainer.appendChild(searchForm);
 
+    //Once you click search, first clear the gallery, then populate the user list based on search results 
+    //compared to the master list.  Push these results to the gallery.
     searchButton.addEventListener('click', () => {
         clearGallery();
         let searchString = searchBox.value;
@@ -114,25 +129,21 @@ function addSearchContainer() {
         }
     });
 
-
-
-
-
-
-
-   /* <form action="#" method="get">
-            <input type="search" id="search-input" class="search-input" placeholder="Search...">
-            <input type="submit" value="&#x1F50D;" id="search-submit" class="search-submit">
-     </form>*/
-
 }
+
+//Function to add the modal and create its buttons.
 function addModal(user){
+    // Figure out the end index of the user list.
     const endIndex = users.length - 1;
+    //Get the current index of the user versus the user list.
     const currentIndex = users.indexOf(user);
+    //Clear out the old modal if present.
     const oldModal = document.getElementsByClassName('modal-container')[0];
     if(oldModal){
         oldModal.remove();
     }
+
+    //Create our elements.
     const modalContainer = document.createElement('div');
     const modal = document.createElement('div');
     const modalInfoContainer = document.createElement('div');
@@ -141,6 +152,7 @@ function addModal(user){
     const prevButton = document.createElement('button');
     const closeButton = document.createElement('button');
     
+    //Assign classes, id's and inner content
     modalContainer.className = 'modal-container';
     modal.className = 'modal';
     modalInfoContainer.className = 'modal-info-container';
@@ -167,24 +179,30 @@ function addModal(user){
         <p class="modal-text">${user.street.number} ${user.street.name}, ${user.city} ${user.state}, ${user.postcode}</p>
         <p class="modal-text">Birthday: ${user.dob.toLocaleDateString()}</p>
     </div>`
-    console.log(user.street);
     
+    //Append our children
     modal.appendChild(closeButton);
     modal.appendChild(modalInfoContainer);
     modalContainer.appendChild(modal);
     
+    //Only add a prev button if we are not on entry zero
     if(currentIndex > 0){
         modalButtonContainer.appendChild(prevButton)
     }
+    //Only add a next button if we are not on the end of the array
     if(currentIndex < endIndex){
         modalButtonContainer.appendChild(nextButton);
     }
     modalContainer.appendChild(modalButtonContainer);
     document.body.appendChild(modalContainer);
     
+    //Remove the modal if the close button is clicked.
     closeButton.addEventListener('click', () => modalContainer.remove());
+    // Create a new modal with the next user or previous user if the corresponding buttons are clicked.
     nextButton.addEventListener('click', () => addModal(users[currentIndex + 1]));
     prevButton.addEventListener('click', () => addModal(users[currentIndex - 1]));
 }
+
+//Fetch the users, add the search container, start the show!
 fetchUsers();
 addSearchContainer();
