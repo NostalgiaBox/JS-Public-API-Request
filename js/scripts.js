@@ -158,14 +158,14 @@ function addModal(user){
     modalInfoContainer.className = 'modal-info-container';
     modalButtonContainer.className = 'modal-btn-container';
     closeButton.id = 'modal-close-btn';
-    closeButton.className = 'modal-close.btn';
+    closeButton.className = 'modal-close-btn';
     closeButton.innerHTML = '<strong>X</strong>'
     prevButton.id = 'modal-prev';
-    prevButton.class = 'modal-prev btn';
-    prevButton.innerText = 'Prev';
+    prevButton.className = 'modal-prev btn';
+    prevButton.innerText = '<';
     nextButton.id = 'modal-next';
-    nextButton.class = 'modal-next btn';
-    nextButton.innerText = 'Next';
+    nextButton.className = 'modal-next btn';
+    nextButton.innerText = '>';
 
     
     modalInfoContainer.innerHTML = 

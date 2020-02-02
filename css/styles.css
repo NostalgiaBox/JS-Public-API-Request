@@ -151,16 +151,23 @@ header h1 {
     transition: .4s ease-out;
 }
 
+
 .modal-close-btn {
     position: absolute;
     top: 15px;
     right: 15px;
     cursor: pointer;
-    color: rgba(255, 255, 255, 0.9);
-    background: rgba(0, 0, 0, 0.8);
+    color: rgba(0, 0, 0, 0.9);
+    background: rgba(255, 255, 255, 0.8);
     outline: none;
     border-radius: 0.25em;
     border: 1px solid rgba(50, 50, 50, 0.3);
+}
+
+.modal-close-btn:hover {
+    color: rgba(255, 255, 255, 0.9);
+    background: rgba(0, 0, 0, 0.8);
+    transition: .4s ease-out;
 }
 
 .modal-img {
@@ -204,14 +211,18 @@ header h1 {
     cursor: pointer;
     font-size: 0.85em;
     text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.9);
-    padding: 0.75em 1.5em;
-    background: rgba(0, 0, 0, 0.8);
-    border-radius: 0.35em;
+    color: rgba(0, 0, 0, 0.9);
+    padding: 0.75em 1.0em;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 5.35em;
     transition: .4s ease-out;
     outline: none;
   }
   
+  .modal-btn-container .btn:hover {
+    color: rgba(255, 255, 255, 0.9);
+    background: rgba(0, 0, 0, 0.8);
+  }
 
 /* ===================================== 
    Media Queries
